@@ -1,0 +1,193 @@
+\documentclass[10pt, a4paper]{book}
+
+% --- Packages ---
+\usepackage[utf8]{inputenc} % Input encoding
+\usepackage[T1]{fontenc}    % Font encoding
+\usepackage{amsmath}        % Essential for mathematical environments (equations, matrices)
+\usepackage{amssymb}        % Mathematical symbols (e.g., \mathbb, \mathfrak)
+\usepackage{amsthm}         % For theorems, definitions, proofs
+\usepackage{amsfonts}       % Extra fonts for math
+\usepackage{bm}             % Bold math symbols (e.g., bold vectors)
+\usepackage[top=2cm, bottom=2.cm, left=1cm, right=1cm]{geometry}
+\usepackage{fancyhdr}       % Custom headers and footers
+\usepackage{setspace}       % Line spacing control
+    \onehalfspacing         % You can change this to \singlespacing or \doublespacing
+\usepackage{hyperref}       % Hyperlinks in the PDF (e.g., table of contents)
+\usepackage{cleveref}       % Smart referencing (e.g., \cref{thm:KKT})
+\usepackage{enumitem}       % Custom list environments (e.g., for enumerated steps)
+\usepackage{graphicx}       % Including images/diagrams (if needed later)
+\usepackage{tikz}           % For drawing diagrams (if needed later)
+
+% --- Custom Environments for Optimization ---
+
+% Theorem Style
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[chapter]
+\newtheorem{example}{Example}[chapter]
+\newtheorem{problem}{Problem}[chapter]
+
+% Proof/Statement Style
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{lemma}{Lemma}[chapter]
+\newtheorem{corollary}{Corollary}[chapter]
+\newtheorem{proposition}{Proposition}[chapter]
+
+% Proofs use the standard environment: \begin{proof} ... \end{proof}
+
+% --- Custom Commands ---
+\newcommand{\R}{\mathbb{R}}         % Real numbers
+\newcommand{\N}{\mathbb{N}}         % Natural numbers
+\newcommand{\Z}{\mathbb{Z}}         % Integers
+\newcommand{\vectx}{\mathbf{x}}     % Vector x
+\newcommand{\vecty}{\mathbf{y}}     % Vector y
+\newcommand{\grad}{\nabla}          % Gradient operator
+\newcommand{\Hessian}{\mathbf{H}}   % Hessian matrix
+
+% --- Headers and Footers ---
+\pagestyle{fancy}
+\fancyhead[L]{Optimization Lecture Notes - Rishi Raj Vishwakarma}
+\fancyhead[R]{\leftmark}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+% --- Document Start ---
+\begin{document}
+
+\title{Optimization Theory and Methods}
+\author{Compiled Notes}
+\date{\today}
+
+\maketitle
+
+\frontmatter % For Roman numerals pages (e.g., Preface, TOC)
+\tableofcontents
+
+\mainmatter % For Arabic numerals pages (Start of Chapters)
+% Start adding content with \chapter{...}
+
+% Example structure for your first chapter:
+% \chapter{Introduction to Optimization}
+% 
+% \section{Basic Concepts}
+% 
+% \subsection{The General Optimization Problem}
+% The standard form is:
+% $$ \min_{\vectx \in \R^n} f(\vectx) \quad \text{subject to} \quad \vectx \in \mathcal{S} $$
+% where $f(\vectx)$ is the objective function and $\mathcal{S}$ is the feasible set.
+\chapter{Introduction to Optimization}
+
+\section{Course Context and Motivation}
+
+Optimization is fundamental across various fields, including Machine Learning (ML). This course emphasizes \textbf{algorithmic aspects} and \textbf{implementation} in dynamic contexts, especially regarding Large Language Models (LLMs).
+
+\subsection{Two Core Perspectives of Optimization}
+
+Optimization in ML can be viewed through two complementary lenses:
+
+\begin{enumerate}[label=(\arabic*)]
+    \item \textbf{Mathematical Modeling:} Formulating problems (e.g., fitting data) using objectives and constraints.
+    \item \textbf{Computational Optimization:} Focusing on the efficiency and properties of the algorithms used to solve the problems (e.g., convergence speed).
+\end{enumerate}
+
+\subsection{Importance and Necessity}
+
+The study of optimization remains critical due to:
+
+\begin{itemize}
+    \item \textbf{Computational Efficiency:} Making large models (like LLMs) more efficient, reducing GPU consumption, and innovating parameter learning.
+    \item \textbf{Operational Deployment:} Enabling models to operate in \textbf{frugal environments} (e.g., Edge Computing) with limited computational resources.
+    \item \textbf{Informed Decision-Making:} Providing the knowledge base to make informed choices about objectives and algorithms, pushing the boundaries of research.
+\end{itemize}
+
+\section{Optimization in Supervised Learning: Regression}
+
+The most famous example is \textbf{regression}, which involves learning weights ($\mathbf{w}$) to approximate an output $\mathbf{y}$ based on input features $\phi(\mathbf{x})$.
+
+\subsection{The General Model}
+
+The output $y$ is approximated as a linear combination of features $\phi(\mathbf{x})$ and associated weights $\mathbf{w}$:
+
+$$ y \approx \phi(\mathbf{x})^T \mathbf{w} $$
+
+\noindent Where $\phi(\mathbf{x})$ (the feature map) and $\mathbf{w}$ (the weights) are column vectors. In this context, $\phi(\mathbf{x})$ is treated as a known set of functions.
+
+\subsection{Regularized Least Squares Problem}
+
+The goal is to minimize the error over a set of observations $(\mathbf{x}_i, y_i)$, often incorporating a regularizer:
+
+\begin{problem}[Regularized Least Squares]
+The optimization problem is defined as learning the weights $\mathbf{w}$ by minimizing the sum of squared errors plus an L2 regularizer:
+$$ \min_{\mathbf{w}} \sum_{i=1}^{N} \left(y_i - \phi(\mathbf{x}_i)^T \mathbf{w}\right)^2 + \lambda ||\mathbf{w}||_2^2 $$
+\end{problem}
+
+\noindent Where:
+\begin{itemize}
+    \item The first term is the \textbf{Loss Function} (Sum of Squares of Errors).
+    \item The second term, $\lambda ||\mathbf{w}||_2^2$, is the \textbf{Regularizer}.
+\end{itemize}
+
+\subsection{Rationale for Regularization}
+
+The regularizer term $\lambda ||\mathbf{w}||_2^2$ serves multiple roles:
+
+\begin{enumerate}[label=(\roman*)]
+    \item \textbf{Prevent Overfitting (Generalization):} It prevents the model from just memorizing the training data, ensuring it can generalize to new inputs $\mathbf{x}_{\text{new}}$.
+    \item \textbf{Introducing Prior/Bias:} It is equivalent to imposing a constraint or a \textbf{prior} on the weights.
+    \item \textbf{Bayesian Equivalence:} L2 regularization ($||\mathbf{w}||_2^2$) is equivalent to placing a \textbf{Gaussian prior} on the parameters $\mathbf{w}$. L1 regularization ($||\mathbf{w}||_1$) is equivalent to a \textbf{Laplace/Lidstone prior}.
+    \item \textbf{Computational Improvement:} From an algorithmic perspective, it promotes desirable properties like \textbf{strong convexity}, leading to better convergence (e.g., faster convergence for Gradient Descent).
+\end{enumerate}
+
+\section{Optimization Formulation for Classification}
+
+In supervised learning, the model is generally $F_{\theta}(\mathbf{x})$ (where $\theta$ are the parameters/weights). The general objective is to minimize the loss plus a regularizer:
+$$ \min_{\mathbf{\theta}} \mathcal{L}(\mathbf{\theta}) + \lambda \Omega(\mathbf{\theta}) $$
+
+\subsection{Classification Losses}
+
+Classification losses generally attempt to approximate the ideal, non-differentiable \textbf{Step Loss} (0 loss for correct class, 1 for wrong class) with a continuous function.
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|l|l|l|}
+        \hline
+        \textbf{Loss Function} & \textbf{Characteristics} & \textbf{Common Use} \\
+        \hline
+        Step Loss & Ideal, Non-differentiable & Theoretical Benchmark \\
+        \hline
+        Logistic Loss & Continuous, used to maximize likelihood & Classification (Binary/Multiclass) \\
+        \hline
+        SoftMax Loss & Generalization of Logistic Loss & Multiclass Classification \\
+        \hline
+        Hinge Loss & Focuses on margin; continuous but non-differentiable at $y F(\mathbf{x})=1$ & Support Vector Machines (SVMs) \\
+        \hline
+    \end{tabular}
+    \caption{Common Loss Functions for Classification}
+\end{table}
+
+\subsection{Regularizers and Sparsity}
+
+The regularizer can also be viewed as a constraint on the magnitude of weights, $ \Omega(\mathbf{\theta}) \le \gamma$.
+
+\begin{enumerate}[label=(\roman*)]
+    \item \textbf{L2 Regularization ($||\mathbf{w}||_2^2$):} $\Omega(\mathbf{w}) = \sum w_i^2$. The constraint set ($\Omega(\mathbf{w}) \le \gamma$) is a \textbf{sphere}.
+    \item \textbf{L1 Regularization (Lasso):} $\Omega(\mathbf{w}) = \sum |w_i|$. The constraint set is a \textbf{diamond/square} (in 2D), forcing optimal solutions to occur at the corners. This leads to \textbf{sparse solutions}, crucial for \textbf{quantization} and compact models (e.g., for Edge Computing).
+\end{enumerate}
+
+\begin{example}[Closed-Form Solution: Ridge Regression]
+The L2 Regularized Least Squares problem (Ridge Regression) possesses a \textbf{closed-form solution}.
+$$ \mathbf{w}^* = (\mathbf{X}^T \mathbf{X} + \lambda \mathbf{I})^{-1} \mathbf{X}^T \mathbf{y} $$
+\noindent The regularization term $\lambda \mathbf{I}$ increases the eigenvalues of the matrix $\mathbf{X}^T \mathbf{X} + \lambda \mathbf{I}$, bringing \textbf{stability} to the solution. Most other problems require \textbf{iterative algorithms}.
+\end{example}
+
+\section{Flavors of Optimization}
+
+Optimization problems in ML fall into three categories:
+
+\begin{enumerate}[label=(\arabic*)]
+    \item \textbf{Continuous Optimization}: Variables are continuous (e.g., weights $\mathbf{w}$). \textbf{Examples:} Least Squares, Neural Networks, LLMs, Convex Optimization. Often viewed as \textbf{relaxations} of hard discrete problems.
+    \item \textbf{Discrete Optimization}: Variables are discrete (e.g., selections). \textbf{Examples:} Hyperparameter Optimization, Network Architecture Search, Identifying data subsets. Often used as a \textbf{subroutine} to make continuous optimization more effective.
+    \item \textbf{Mixed Continuous and Discrete Optimization}: Involves both continuous (e.g., location/intensity) and discrete variables (e.g., selection/membership). \textbf{Example: K-Means Clustering} (locating centroid is continuous; assigning membership is discrete).
+\end{enumerate}
+\end{document}
